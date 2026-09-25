@@ -220,6 +220,10 @@ async fn discover(
             "x-mangodisk-distribution",
             crate::commands::app_distribution::current().diagnostic_name(),
         )?;
+    #[cfg(target_os = "windows")]
+    if let Some(native_arch) = super::app_update_native_arch::telemetry_native_arch() {
+        builder = builder.header("x-mangodisk-native-arch", native_arch)?;
+    }
     // Reuse an existing identity without racing the frontend's first-time
     // identity creation. Missing telemetry must never block signed updates.
     if let Ok(store) = app
